@@ -1,12 +1,15 @@
 .mvv-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.8em;
-    line-height: 0.8em;
+    font-size: 0.6em;
+    line-height: 0.6em;
     
   }
   
 .mvv-table td {
-    padding: 10px;
-    border-bottom: 1px solid
+    padding: 8px;
 }
+
+.productsvg {
+    height: 0.8em;
+  }
