@@ -15,7 +15,7 @@ MagicMirror² Module to display public transport from Munich  in Germany.
 ```git clone https://github.com/wiesty/MMM-MVVWiesty.git```
 2. Install dependencies in main MagicMirror folder
 3. Head over to [mvv-muenchen.de](https://www.mvv-muenchen.de/fahrplanauskunft/fuer-entwickler/opendata/index.html) and download Haltestellenliste CSV
-4. Search your station and add modify the config template below
+4. Search your station and modify the config template below
 5. Add configuration to your config.js
 
 ## Config
