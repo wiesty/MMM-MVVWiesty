@@ -30,9 +30,31 @@ Module.register("MMM-MVVWiesty", {
           var departure = this.departures[i];
   
           var row = document.createElement("tr");
-
+  
           var lineCell = document.createElement("td");
-          lineCell.innerHTML = departure.line.name + " " + departure.line.number;
+          var lineImage = document.createElement("img");
+          lineImage.classList.add("productsvg");
+  
+          switch (departure.line.name) {
+            case "Bus":
+              lineImage.src = this.file("assets/bus.svg");
+              break;
+            case "S-Bahn":
+              lineImage.src = this.file("assets/sbahn.svg");
+              break;
+            case "Tram":
+              lineImage.src = this.file("assets/tram.svg");
+              break;
+            case "U-Bahn":
+              lineImage.src = this.file("assets/ubahn.svg");
+              break;
+            default:
+              lineImage.src = this.file("assets/default.svg");
+              break;
+          }
+  
+          lineCell.appendChild(lineImage);
+          lineCell.innerHTML += " " + departure.line.number;
           row.appendChild(lineCell);
   
           var directionCell = document.createElement("td");
@@ -61,7 +83,7 @@ Module.register("MMM-MVVWiesty", {
         "https://www.mvv-muenchen.de/?eID=departuresFinder&action=get_departures&stop_id=" +
         stopId +
         "&requested_timestamp=" +
-        Math.floor(Date.now() / 1000) + // Aktuellen Timestamp verwenden
+        Math.floor(Date.now() / 1000) +
         "&lines=";
   
       var xhr = new XMLHttpRequest();
@@ -75,7 +97,6 @@ Module.register("MMM-MVVWiesty", {
           }
         }
       };
-      Log.info(url);
       xhr.send();
     },
   
