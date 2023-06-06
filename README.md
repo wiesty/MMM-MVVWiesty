@@ -3,7 +3,7 @@
 MagicMirror² Module to display public transport from Munich  in Germany.
 
 
-![image](https://github.com/wiesty/MMM-MVVWiesty/assets/106901362/9656a212-c737-4ad5-a181-55abcc75fcec)
+![image](https://i.imgur.com/1XGtvkj.png)
 
 
 ## Dependencies
