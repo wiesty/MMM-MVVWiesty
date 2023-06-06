@@ -1,6 +1,6 @@
 Module.register("MMM-MVVWiesty", {
     defaults: {
-      updateInterval: 60000,
+      updateInterval: 300000,
       maxEntries: 5,
       stopId: "de:09162:6" 
     },
