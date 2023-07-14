@@ -48,6 +48,9 @@ Module.register("MMM-MVVWiesty", {
             case "U-Bahn":
               lineImage.src = this.file("assets/ubahn.svg");
               break;
+            case "MVV-Regionalbus":
+              lineImage.src = this.file("assets/bus.svg");
+              break;
             default:
               lineImage.src = this.file("assets/default.svg");
               break;
