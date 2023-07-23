@@ -8,8 +8,12 @@
   
 .mvv-table td {
     padding: 8px;
+    vertical-align: middle;
+    text-align: center;
 }
 
 .productsvg {
     height: 0.8em;
+    vertical-align: middle;
+    margin-right: 5px;
   }
