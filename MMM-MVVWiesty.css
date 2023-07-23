@@ -1,19 +1,19 @@
 .mvv-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 1em;
-    line-height: 0.6em;
-    
-  }
-  
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1em;
+  line-height: 0.6em;
+}
+
 .mvv-table td {
-    padding: 8px;
-    vertical-align: middle;
-    text-align: center;
+  padding: 8px;
+  text-align: left; 
+}
+
+.mvv-table .icon-cell {
+  text-align: center;
 }
 
 .productsvg {
-    height: 0.8em;
-    vertical-align: middle;
-    margin-right: 5px;
-  }
+  height: 0.8em;
+}
