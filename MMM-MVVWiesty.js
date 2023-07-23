@@ -57,7 +57,9 @@ Module.register("MMM-MVVWiesty", {
           }
   
           lineCell.appendChild(lineImage);
-          lineCell.innerHTML += " " + departure.line.number;
+          var lineNumberSpan = document.createElement("span");
+          lineNumberSpan.innerHTML = departure.line.number;
+          lineCell.appendChild(lineNumberSpan);
           row.appendChild(lineCell);
   
           var directionCell = document.createElement("td");
@@ -110,4 +112,3 @@ Module.register("MMM-MVVWiesty", {
       }, this.config.updateInterval);
     }
   });
-  
