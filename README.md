@@ -26,10 +26,10 @@ MagicMirror² Module to display public transport from Munich  in Germany.
     module: "MMM-MVVWiesty",
     position: "bottom_left",
     config: {
-        updateInterval: 300000, // Aktualisierungsintervall in Millisekunden (hier: 5 Minuten)
-        maxEntries: 5, // Maximale Anzahl der angezeigten Einträge in der Tabelle
-        stopId: "de:09162:6", // Stop-ID im Format de:09162:6
-        filter: {} // Filter Options are "Line Name": "direction", multiple lines possible
+        updateInterval: 300000, // update interval in ms (here: 5 min)
+        maxEntries: 5, // Maximum number of entries displayed in the table
+        stopId: "de:09162:6", // Stop ID
+        filter: {} // filter options are "Line Name": "direction", multiple lines possible
     }
 },
 ```
