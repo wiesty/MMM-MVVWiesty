@@ -53,7 +53,6 @@ With the above configuration, the module will only display departures for the S8
 
 If you want to display departures for certain lines regardless of their direction, simply provide the line number with an empty string as the value. For example:
 
-javascriptCopy code
 
 `filter: {
   "16": "",
