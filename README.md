@@ -1,6 +1,4 @@
-# MMM-MVVWiesty [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wiesty/MMM-MVVWiesty/raw/master/LICENSE)
-
-<img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg"/>
+# MMM-MVVWiesty [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wiesty/MMM-MVVWiesty/raw/master/LICENSE) <img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg"/>
 
 MagicMirror² Module to display public transport from Munich  in Germany.
 
