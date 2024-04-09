@@ -40,6 +40,8 @@ Module.register("MMM-MVVWiesty", {
                 switch (departure.line.name) {
                     case "Bus": lineImage.src = this.file("assets/bus.svg");
                         break;
+                    case "MetroBus": lineImage.src = this.file("assets/bus.svg");
+                        break;
                     case "S-Bahn": lineImage.src = this.file("assets/sbahn.svg");
                         break;
                     case "Tram": lineImage.src = this.file("assets/tram.svg");
