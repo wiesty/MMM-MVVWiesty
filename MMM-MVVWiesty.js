@@ -7,6 +7,7 @@ Module.register("MMM-MVVWiesty", {
     },
   
     start: function () {
+        Log.info('%cMMM-MVVWiesty loaded. ', 'background: #00355C; color: #C0D101');
         this.departures = [];
         this.loadDepartures();
         this.scheduleUpdate();
@@ -49,6 +50,8 @@ Module.register("MMM-MVVWiesty", {
                     case "U-Bahn": lineImage.src = this.file("assets/ubahn.svg");
                         break;
                     case "MVV-Regionalbus": lineImage.src = this.file("assets/bus.svg");
+                        break;
+                    case "RegionalBus": lineImage.src = this.file("assets/bus.svg");
                         break;
                     default: lineImage.src = this.file("assets/default.svg");
                         break;
@@ -102,7 +105,7 @@ Module.register("MMM-MVVWiesty", {
         var self = this;
         var stopId = this.config.stopId.replace(/:/g, "%3A");
         var url = "https://www.mvv-muenchen.de/?eID=departuresFinder&action=get_departures&stop_id=" + stopId + "&requested_timestamp=" + Math.floor(Date.now() / 1000) + "&lines=";
-  
+        
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
         xhr.onreadystatechange = function () {
@@ -112,6 +115,9 @@ Module.register("MMM-MVVWiesty", {
                     self.departures = self.filterDepartures(response.departures);
                     self.updateDom();
                 }
+            }
+            else if (xhr.readyState === 4 && xhr.status !== 200) {
+                Log.info('%cMMM-MVVWiesty failed to load departures or no departures found.', 'background: #00355C; color: #C0D101');
             }
         };
         xhr.send();
