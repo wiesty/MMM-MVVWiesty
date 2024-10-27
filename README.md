@@ -8,7 +8,6 @@ MagicMirror² Module to display public transport from Munich  in Germany.
 
 ## Dependencies
 * instance of [MagicMirror²](https://github.com/MichMich/MagicMirror)
-* Node Fetch (linux: npm install node-fetch)
 
 ## Installation
 1. Clone this repository in your MagicMirror installation into the folder modules.
