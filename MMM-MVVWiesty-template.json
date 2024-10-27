@@ -1,0 +1,10 @@
+{
+    module: "MMM-MVVWiesty",
+    position: "bottom_left",
+    config: {
+        updateInterval: 300000,
+        maxEntries: 5,
+        stopId: "de:09162:6",
+        filter: {}
+    }
+},
