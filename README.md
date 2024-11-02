@@ -29,7 +29,7 @@ MagicMirror² Module to display public transport from Munich  in Germany.
         stopId: "de:09162:6",           // Stop ID for your station
         filter: {},                     // Filter by line and/or direction (optional)
         displayNotifications: true,     // Show notifications for each departure if available
-        scrollSpeed: 40,                // Speed for scrolling notifications (higher is slower)
+        scrollSpeed: 40,                // Speed for scrolling notifications
         minTimeUntilDeparture: 0        // Minimum time in minutes until departure to display
     }
 },
@@ -42,7 +42,7 @@ MagicMirror² Module to display public transport from Munich  in Germany.
 -   **stopId**: The unique ID for the stop. Find this ID from the MVV Haltestellenliste CSV.
 -   **filter**: Object for filtering departures by line number and/or direction (details below).
 -   **displayNotifications**: Enables or disables notifications for each departure, such as delays or route changes.
--   **scrollSpeed**: The speed at which notification text scrolls across the screen (higher values result in slower scrolling).
+-   **scrollSpeed**: The speed at which notification text scrolls across the screen.
 -   **minTimeUntilDeparture**: Specifies the minimum time (in minutes) for departures to be displayed. For example, if set to `3`, only departures leaving in 3 minutes or more will appear.
 
 #
