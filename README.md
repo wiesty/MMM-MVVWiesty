@@ -25,13 +25,25 @@ MagicMirror² Module to display public transport from Munich  in Germany.
     module: "MMM-MVVWiesty",
     position: "bottom_left",
     config: {
-        updateInterval: 300000, // update interval in ms (here: 5 min)
-        maxEntries: 5, // Maximum number of entries displayed in the table
-        stopId: "de:09162:6", // Stop ID
-        filter: {}
+        maxEntries: 5,                  // Maximum number of departures to display
+        stopId: "de:09162:6",           // Stop ID for your station
+        filter: {},                     // Filter by line and/or direction (optional)
+        displayNotifications: true,     // Show notifications for each departure if available
+        scrollSpeed: 40,                // Speed for scrolling notifications (higher is slower)
+        minTimeUntilDeparture: 0        // Minimum time in minutes until departure to display
     }
 },
+
 ```
+
+### Configuration Options
+
+-   **maxEntries**: The maximum number of departures to display on the screen.
+-   **stopId**: The unique ID for the stop. Find this ID from the MVV Haltestellenliste CSV.
+-   **filter**: Object for filtering departures by line number and/or direction (details below).
+-   **displayNotifications**: Enables or disables notifications for each departure, such as delays or route changes.
+-   **scrollSpeed**: The speed at which notification text scrolls across the screen (higher values result in slower scrolling).
+-   **minTimeUntilDeparture**: Specifies the minimum time (in minutes) for departures to be displayed. For example, if set to `3`, only departures leaving in 3 minutes or more will appear.
 
 #
 
@@ -74,3 +86,36 @@ Or:
 }` 
 
 This flexible filtering system ensures that you can always access the departures that are most relevant to you without any unnecessary clutter.
+
+
+### Overall CSS Layout (`.MMM-MVVWiesty` and `.mvv-table`) - useful for custom css
+
+-   **`.MMM-MVVWiesty .module-content`**: Limits the module’s maximum width to `25vw`, allowing it to adjust responsively up to that width. The module is centered horizontally and has overflow hidden to prevent text spilling out.
+-   **`.mvv-table`**: Sets the table width to `100%`, collapses borders for a cleaner look, and uses a fixed table layout to maintain column widths. This class also sets the font size and line height.
+
+### Cell-Specific Classes
+
+-   **`.icon-cell` & `.line-cell`**: These two cells are the narrowest, each set to a width of `1vw` to minimize spacing. Both cells have right padding (`5px`) and text aligned to the start (left) for a compact display of line numbers and icons.
+    
+-   **`.direction-cell`**: Displays the direction text of each departure with specific settings:
+    
+    -   **Width**: `8vw`, allowing for adequate space without pushing other elements off.
+    -   **Overflow**: `hidden`, `white-space: nowrap`, and `text-overflow: ellipsis` ensure that long text will not wrap and instead shows an ellipsis (`...`) when text is truncated.
+    -   **Customizations**: If direction text is cut off or requires more space, consider increasing `width` or adjusting `text-overflow`.
+-   **`.time-cell`**: Displays the departure time, with a width of `6vw`, making it slightly narrower than the direction cell but wide enough for typical HH
+    
+    formatting. It also has `white-space: nowrap` and `overflow: hidden` to ensure text remains on one line.
+    
+-   **`.until-cell`**: Shows the “time until departure” information with a narrower width of `3vw`. This cell is also set to nowrap and hidden overflow to keep the text compact. If more padding is needed, adjust the `padding` or `width` as desired.
+    
+-   **`.notification-cell`**: Used for displaying notifications. It spans all columns (`colSpan=5`) and has overflow hidden to keep long notification text within bounds.
+
+
+## Changelog
+
+### v2.0.0 - Latest Release
+
+-   **New Config Option**: `minTimeUntilDeparture` - Filters out departures that are too soon, allowing you to show only those that are X minutes or more in the future.
+-   **New Config Option**: `displayNotifications` - Enables or disables the display of notifications for each departure.
+-   **Removed**: `updateInterval` option - The module now fetches data every 5 minutes by default, updating the displayed times every minute. This change reduces server load by avoiding excessive API requests.
+-   **Improved Filtering**: Departures are now sorted and filtered based on the remaining time to departure, allowing the module to only display the most relevant and up-to-date information.
