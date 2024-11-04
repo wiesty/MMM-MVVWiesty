@@ -88,7 +88,7 @@ This configuration will display all S2 departures heading towards Petershausen, 
 
 ### Display All Departures
 
-To show all departures without any filtering, you can either leave the `filter` object empty or include the key `all` with an empty string as its value. Both of these configurations will display every departure:
+To show all departures without any filtering, you can either leave the `filter` object empty, delete it from the config or include the key `all` with an empty string as its value. Both of these configurations will display every departure:
 
 ```
 filter: {}
