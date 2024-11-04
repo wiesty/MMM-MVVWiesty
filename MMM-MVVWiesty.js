@@ -110,7 +110,7 @@ Module.register("MMM-MVVWiesty", {
 
     getLineIcon: function (lineName) {
         switch (lineName) {
-            case "Bus": case "MetroBus": case "MVV-Regionalbus": case "RegionalBus":
+            case "Bus": case "MetroBus": case "MVV-Regionalbus": case "RegionalBus": case "ExpressBus":
                 return this.file("assets/bus.svg");
             case "S-Bahn":
                 return this.file("assets/sbahn.svg");
@@ -161,20 +161,23 @@ Module.register("MMM-MVVWiesty", {
         var self = this;
         var filterKeys = Object.keys(self.config.filter);
         var minTime = this.config.minTimeUntilDeparture;
-
+    
         return departures.filter(function (departure) {
             var minutesUntilDeparture = self.calculateTimeUntil(departure.departureLive);
             if (minutesUntilDeparture < minTime) return false;
-
+    
             if (filterKeys.length === 0 || self.config.filter.hasOwnProperty("all")) return true;
-
-            var isLineFiltered = self.config.filter.hasOwnProperty(departure.line.number);
-            if (!isLineFiltered) return false;
-
-            var lineDirectionFilter = self.config.filter[departure.line.number];
-            return lineDirectionFilter === "" || departure.direction === lineDirectionFilter;
+    
+            var lineFilter = self.config.filter[departure.line.number];
+            if (!lineFilter) return false;
+    
+            if (Array.isArray(lineFilter)) {
+                return lineFilter.includes(departure.direction);
+            }
+    
+            return departure.direction === lineFilter || lineFilter === "";
         });
-    },
+    },     
 
     updateFilteredDepartures: function () {
         var now = new Date();

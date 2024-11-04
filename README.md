@@ -65,25 +65,42 @@ With the above configuration, the module will only display departures for the S8
 If you want to display departures for certain lines regardless of their direction, simply provide the line number with an empty string as the value. For example:
 
 
-`filter: {
+```
+filter: {
   "16": "",
   "S8": ""
-}` 
+}
+```
 
 This configuration results in the module showing all departures for the 16 and S8 lines, irrespective of their direction.
+
+### Multiple Directions Example:
+
+You can specify multiple destinations for a single line by using an array. For example:
+
+```
+filter: {
+  "S2": ["Petershausen", "Isartor", "Ostbahnhof"]
+}
+``` 
+
+This configuration will display all S2 departures heading towards Petershausen, Isator, or Ostbahnhof. If any of these directions match the current destination of the line, the departure will be shown.
 
 ### Display All Departures
 
 To show all departures without any filtering, you can either leave the `filter` object empty or include the key `all` with an empty string as its value. Both of these configurations will display every departure:
 
-`filter: {
-}` 
+```
+filter: {}
+```
 
 Or:
 
-`filter: {
+```
+filter: {
   "all": ""
-}` 
+}
+```
 
 This flexible filtering system ensures that you can always access the departures that are most relevant to you without any unnecessary clutter.
 
@@ -113,7 +130,12 @@ This flexible filtering system ensures that you can always access the departures
 
 ## Changelog
 
-### v2.0.0 - Latest Release
+### v2.0.1 - Latest Release
+
+-   **Expanded Filtering**: The `filter` option now supports multiple directions per line using an array format, allowing more precise control over which departures are displayed. For example, `"S2": ["Petershausen", "Isator", "Ostbahnhof"]` will show all S2 departures toward these specified destinations.
+-   **New Icon**: Added an icon for ExpressBus to enhance line identification.
+
+### v2.0.0
 
 -   **New Config Option**: `minTimeUntilDeparture` - Filters out departures that are too soon, allowing you to show only those that are X minutes or more in the future.
 -   **New Config Option**: `displayNotifications` - Enables or disables the display of notifications for each departure.
