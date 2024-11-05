@@ -8,7 +8,7 @@ Module.register("MMM-MVVWiesty", {
         minTimeUntilDeparture: 0
     },
 
-    start: function () {
+    start () {
         Log.info('%cMMM-MVVWiesty loaded. ', 'background: #00355C; color: #C0D101');
         this.departures = [];
         this.filteredDepartures = [];
@@ -17,15 +17,15 @@ Module.register("MMM-MVVWiesty", {
         this.scheduleMinuteUpdate();
     },
 
-    getStyles: function () {
+    getStyles () {
         return ["MMM-MVVWiesty.css"];
     },
 
-    getHeader: function () {
+    getHeader () {
         return this.config.header && (this.config.header !== "") ? this.config.header : "MVV Abfahrtsmonitor";
     },
 
-    getDom: function () {
+    getDom () {
         var wrapper = document.createElement("div");
         wrapper.classList.add("mvv-table-wrapper");
 
@@ -99,7 +99,7 @@ Module.register("MMM-MVVWiesty", {
         return wrapper;
     },
 
-    setScrollAnimation: function (scrollTextElement, scrollSpeed) {
+    setScrollAnimation (scrollTextElement, scrollSpeed) {
         document.body.appendChild(scrollTextElement);
         var scrollWidth = scrollTextElement.scrollWidth;
         document.body.removeChild(scrollTextElement);
@@ -108,7 +108,7 @@ Module.register("MMM-MVVWiesty", {
         scrollTextElement.style.animationDuration = `${duration}s`;
     },
 
-    getLineIcon: function (lineName) {
+    getLineIcon (lineName) {
         switch (lineName) {
             case "Bus": case "MetroBus": case "MVV-Regionalbus": case "RegionalBus": case "ExpressBus":
                 return this.file("assets/bus.svg");
@@ -123,7 +123,7 @@ Module.register("MMM-MVVWiesty", {
         }
     },
 
-    calculateTimeUntil: function (departureTime) {
+    calculateTimeUntil (departureTime) {
         var now = new Date();
         var departure = new Date();
         departure.setHours(departureTime.split(":")[0]);
@@ -132,7 +132,7 @@ Module.register("MMM-MVVWiesty", {
         return diff >= 0 ? diff : 0;
     },
 
-    loadDepartures: function () {
+    loadDepartures () {
         var self = this;
         var stopId = this.config.stopId.replace(/:/g, "%3A");
         var url = "https://www.mvv-muenchen.de/?eID=departuresFinder&action=get_departures&stop_id=" + stopId + "&requested_timestamp=" + Math.floor(Date.now() / 1000) + "&lines=";
@@ -157,29 +157,29 @@ Module.register("MMM-MVVWiesty", {
         xhr.send();
     },
 
-    filterDepartures: function (departures) {
+    filterDepartures (departures) {
         var self = this;
         var filterKeys = Object.keys(self.config.filter);
         var minTime = this.config.minTimeUntilDeparture;
-    
+  
         return departures.filter(function (departure) {
             var minutesUntilDeparture = self.calculateTimeUntil(departure.departureLive);
             if (minutesUntilDeparture < minTime) return false;
-    
+  
             if (filterKeys.length === 0 || self.config.filter.hasOwnProperty("all")) return true;
-    
+  
             var lineFilter = self.config.filter[departure.line.number];
             if (!lineFilter) return false;
-    
+  
             if (Array.isArray(lineFilter)) {
                 return lineFilter.includes(departure.direction);
             }
-    
+  
             return departure.direction === lineFilter || lineFilter === "";
         });
     },     
 
-    updateFilteredDepartures: function () {
+    updateFilteredDepartures () {
         var now = new Date();
         this.filteredDepartures = this.departures.filter((departure) => {
             var departureDate = new Date();
@@ -189,14 +189,14 @@ Module.register("MMM-MVVWiesty", {
         });
     },
 
-    scheduleUpdate: function () {
+    scheduleUpdate () {
         var self = this;
         setInterval(function () {
             self.loadDepartures();
         }, 300000);
     },
 
-    scheduleMinuteUpdate: function () {
+    scheduleMinuteUpdate () {
         var self = this;
         var now = new Date();
         var msUntilNextMinute = (60 - now.getSeconds()) * 1000;
