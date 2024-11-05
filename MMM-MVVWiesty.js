@@ -9,7 +9,7 @@ Module.register("MMM-MVVWiesty", {
     },
 
     start () {
-        Log.info('%cMMM-MVVWiesty loaded. ', 'background: #00355C; color: #C0D101');
+        Log.info(`Starting module: ${this.name} with identifier: ${this.identifier}`);
         this.departures = [];
         this.filteredDepartures = [];
         this.loadDepartures();
@@ -151,7 +151,7 @@ Module.register("MMM-MVVWiesty", {
                     self.updateDom();
                 }
             } else if (xhr.readyState === 4 && xhr.status !== 200) {
-                Log.info('%cMMM-MVVWiesty failed to load departures or no departures found.', 'background: #00355C; color: #C0D101');
+                Log.error("[MMM-MVVWiesty]: Failed to load departures or no departures found.");
             }
         };
         xhr.send();
