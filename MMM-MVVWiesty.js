@@ -177,7 +177,7 @@ Module.register("MMM-MVVWiesty", {
 
             return departure.direction === lineFilter || lineFilter === "";
         });
-    },     
+    },
 
     updateFilteredDepartures () {
         const now = new Date();
