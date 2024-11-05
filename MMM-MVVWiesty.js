@@ -132,29 +132,28 @@ Module.register("MMM-MVVWiesty", {
         return diff >= 0 ? diff : 0;
     },
 
-    loadDepartures () {
+    async loadDepartures () {
         const self = this;
         const stopId = this.config.stopId.replace(/:/g, "%3A");
         const url = `https://www.mvv-muenchen.de/?eID=departuresFinder&action=get_departures&stop_id=${stopId}&requested_timestamp=${Math.floor(Date.now() / 1000)}&lines=`;
-
-        const xhr = new XMLHttpRequest();
-        xhr.open("GET", url, true);
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                const response = JSON.parse(xhr.responseText);
-                if (response && response.departures && response.departures.length > 0) {
-                    self.departures = self.filterDepartures(response.departures);
-                    self.departures.sort(function(a, b) {
+        try {
+            const response = await fetch(url);
+            if (response.ok) {
+                const data = await response.json();
+                if (data && data.departures && data.departures.length > 0) {
+                    self.departures = self.filterDepartures(data.departures);
+                    self.departures.sort(function (a, b) {
                         return new Date(`1970-01-01T${a.departureLive}:00Z`) - new Date(`1970-01-01T${b.departureLive}:00Z`);
                     });
                     self.updateFilteredDepartures();
                     self.updateDom();
                 }
-            } else if (xhr.readyState === 4 && xhr.status !== 200) {
+            } else {
                 Log.error("[MMM-MVVWiesty]: Failed to load departures or no departures found.");
             }
-        };
-        xhr.send();
+        } catch (error) {
+            Log.error("[MMM-MVVWiesty]: Error fetching departures:", error);
+        }
     },
 
     filterDepartures (departures) {
