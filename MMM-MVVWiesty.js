@@ -26,57 +26,57 @@ Module.register("MMM-MVVWiesty", {
     },
 
     getDom () {
-        var wrapper = document.createElement("div");
+        const wrapper = document.createElement("div");
         wrapper.classList.add("mvv-table-wrapper");
 
         if (this.filteredDepartures.length > 0) {
-            var table = document.createElement("table");
+            const table = document.createElement("table");
             table.classList.add("mvv-table");
 
-            for (var i = 0; i < this.filteredDepartures.length && i < this.config.maxEntries; i++) {
-                var departure = this.filteredDepartures[i];
-                var row = document.createElement("tr");
+            for (let i = 0; i < this.filteredDepartures.length && i < this.config.maxEntries; i++) {
+                const departure = this.filteredDepartures[i];
+                const row = document.createElement("tr");
                 row.classList.add("departure-row");
 
-                var iconCell = document.createElement("td");
+                const iconCell = document.createElement("td");
                 iconCell.classList.add("icon-cell");
-                var lineImage = document.createElement("img");
+                const lineImage = document.createElement("img");
                 lineImage.classList.add("productsvg");
                 lineImage.src = this.getLineIcon(departure.line.name);
                 iconCell.appendChild(lineImage);
                 row.appendChild(iconCell);
 
-                var lineCell = document.createElement("td");
+                const lineCell = document.createElement("td");
                 lineCell.classList.add("line-cell");
                 lineCell.innerHTML = departure.line.number;
                 row.appendChild(lineCell);
 
-                var directionCell = document.createElement("td");
+                const directionCell = document.createElement("td");
                 directionCell.classList.add("direction-cell");
                 directionCell.innerHTML = departure.direction;
                 row.appendChild(directionCell);
 
-                var timeCell = document.createElement("td");
+                const timeCell = document.createElement("td");
                 timeCell.classList.add("time-cell");
                 timeCell.innerHTML = departure.departureLive;
                 row.appendChild(timeCell);
 
-                var untilCell = document.createElement("td");
+                const untilCell = document.createElement("td");
                 untilCell.classList.add("until-cell");
-                var minutesUntilDeparture = this.calculateTimeUntil(departure.departureLive);
+                const minutesUntilDeparture = this.calculateTimeUntil(departure.departureLive);
                 untilCell.innerHTML = minutesUntilDeparture >= 1 ? `in ${minutesUntilDeparture} Min` : "";
                 row.appendChild(untilCell);
 
                 table.appendChild(row);
 
                 if (this.config.displayNotifications && departure.notifications && departure.notifications.length > 0) {
-                    var notificationRow = document.createElement("tr");
-                    var notificationCell = document.createElement("td");
+                    const notificationRow = document.createElement("tr");
+                    const notificationCell = document.createElement("td");
                     notificationCell.colSpan = 5;
                     notificationCell.classList.add("notification-cell");
-                    var notificationText = document.createElement("div");
+                    const notificationText = document.createElement("div");
                     notificationText.classList.add("scroll-container");
-                    var scrollNotification = document.createElement("div");
+                    const scrollNotification = document.createElement("div");
                     scrollNotification.classList.add("scroll-text");
                     scrollNotification.innerHTML = departure.notifications[0].text;
 
@@ -101,10 +101,10 @@ Module.register("MMM-MVVWiesty", {
 
     setScrollAnimation (scrollTextElement, scrollSpeed) {
         document.body.appendChild(scrollTextElement);
-        var scrollWidth = scrollTextElement.scrollWidth;
+        const scrollWidth = scrollTextElement.scrollWidth;
         document.body.removeChild(scrollTextElement);
         scrollTextElement.style.width = `${scrollWidth}px`;
-        var duration = scrollWidth / scrollSpeed;
+        const duration = scrollWidth / scrollSpeed;
         scrollTextElement.style.animationDuration = `${duration}s`;
     },
 
@@ -124,24 +124,24 @@ Module.register("MMM-MVVWiesty", {
     },
 
     calculateTimeUntil (departureTime) {
-        var now = new Date();
-        var departure = new Date();
+        const now = new Date();
+        const departure = new Date();
         departure.setHours(departureTime.split(":")[0]);
         departure.setMinutes(departureTime.split(":")[1]);
-        var diff = Math.floor((departure - now) / (1000 * 60));
+        const diff = Math.floor((departure - now) / (1000 * 60));
         return diff >= 0 ? diff : 0;
     },
 
     loadDepartures () {
-        var self = this;
-        var stopId = this.config.stopId.replace(/:/g, "%3A");
-        var url = "https://www.mvv-muenchen.de/?eID=departuresFinder&action=get_departures&stop_id=" + stopId + "&requested_timestamp=" + Math.floor(Date.now() / 1000) + "&lines=";
+        const self = this;
+        const stopId = this.config.stopId.replace(/:/g, "%3A");
+        const url = "https://www.mvv-muenchen.de/?eID=departuresFinder&action=get_departures&stop_id=" + stopId + "&requested_timestamp=" + Math.floor(Date.now() / 1000) + "&lines=";
 
-        var xhr = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
-                var response = JSON.parse(xhr.responseText);
+                const response = JSON.parse(xhr.responseText);
                 if (response && response.departures && response.departures.length > 0) {
                     self.departures = self.filterDepartures(response.departures);
                     self.departures.sort(function(a, b) {
@@ -158,31 +158,31 @@ Module.register("MMM-MVVWiesty", {
     },
 
     filterDepartures (departures) {
-        var self = this;
-        var filterKeys = Object.keys(self.config.filter);
-        var minTime = this.config.minTimeUntilDeparture;
-  
+        const self = this;
+        const filterKeys = Object.keys(self.config.filter);
+        const minTime = this.config.minTimeUntilDeparture;
+
         return departures.filter(function (departure) {
-            var minutesUntilDeparture = self.calculateTimeUntil(departure.departureLive);
+            const minutesUntilDeparture = self.calculateTimeUntil(departure.departureLive);
             if (minutesUntilDeparture < minTime) return false;
-  
+
             if (filterKeys.length === 0 || self.config.filter.hasOwnProperty("all")) return true;
-  
-            var lineFilter = self.config.filter[departure.line.number];
+
+            const lineFilter = self.config.filter[departure.line.number];
             if (!lineFilter) return false;
-  
+
             if (Array.isArray(lineFilter)) {
                 return lineFilter.includes(departure.direction);
             }
-  
+
             return departure.direction === lineFilter || lineFilter === "";
         });
     },     
 
     updateFilteredDepartures () {
-        var now = new Date();
+        const now = new Date();
         this.filteredDepartures = this.departures.filter((departure) => {
-            var departureDate = new Date();
+            const departureDate = new Date();
             departureDate.setHours(departure.departureLive.split(":")[0]);
             departureDate.setMinutes(departure.departureLive.split(":")[1]);
             return departureDate >= now;
@@ -190,16 +190,16 @@ Module.register("MMM-MVVWiesty", {
     },
 
     scheduleUpdate () {
-        var self = this;
+        const self = this;
         setInterval(function () {
             self.loadDepartures();
         }, 300000);
     },
 
     scheduleMinuteUpdate () {
-        var self = this;
-        var now = new Date();
-        var msUntilNextMinute = (60 - now.getSeconds()) * 1000;
+        const self = this;
+        const now = new Date();
+        const msUntilNextMinute = (60 - now.getSeconds()) * 1000;
 
         setTimeout(function () {
             self.updateFilteredDepartures();
