@@ -135,7 +135,7 @@ Module.register("MMM-MVVWiesty", {
     loadDepartures () {
         const self = this;
         const stopId = this.config.stopId.replace(/:/g, "%3A");
-        const url = "https://www.mvv-muenchen.de/?eID=departuresFinder&action=get_departures&stop_id=" + stopId + "&requested_timestamp=" + Math.floor(Date.now() / 1000) + "&lines=";
+        const url = `https://www.mvv-muenchen.de/?eID=departuresFinder&action=get_departures&stop_id=${stopId}&requested_timestamp=${Math.floor(Date.now() / 1000)}&lines=`;
 
         const xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
