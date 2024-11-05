@@ -110,7 +110,7 @@ Module.register("MMM-MVVWiesty", {
 
     getLineIcon (lineName) {
         switch (lineName) {
-            case "Bus": case "MetroBus": case "MVV-Regionalbus": case "RegionalBus": case "ExpressBus":
+            case "Bus": case "MetroBus": case "MVV-Regionalbus": case "RegionalBus": case "ExpressBus": case "NachtBus":
                 return this.file("assets/bus.svg");
             case "S-Bahn":
                 return this.file("assets/sbahn.svg");
