@@ -114,7 +114,7 @@ Module.register("MMM-MVVWiesty", {
                 return this.file("assets/bus.svg");
             case "S-Bahn":
                 return this.file("assets/sbahn.svg");
-            case "Tram":
+            case "Tram": case "NachtTram":
                 return this.file("assets/tram.svg");
             case "U-Bahn":
                 return this.file("assets/ubahn.svg");
