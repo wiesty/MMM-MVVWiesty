@@ -4,6 +4,7 @@ Module.register("MMM-MVVWiesty", {
         stopId: "de:09162:6",
         filter: {},
         displayNotifications: true,
+        displayBundled: false,
         scrollSpeed: 40,
         minTimeUntilDeparture: 0
     },
@@ -32,6 +33,8 @@ Module.register("MMM-MVVWiesty", {
         if (this.filteredDepartures.length > 0) {
             const table = document.createElement("table");
             table.classList.add("mvv-table");
+
+            let bundledNotifications = {};
 
             for (let i = 0; i < this.filteredDepartures.length && i < this.config.maxEntries; i++) {
                 const departure = this.filteredDepartures[i];
@@ -70,25 +73,56 @@ Module.register("MMM-MVVWiesty", {
                 table.appendChild(row);
 
                 if (this.config.displayNotifications && departure.notifications && departure.notifications.length > 0) {
-                    const notificationRow = document.createElement("tr");
-                    const notificationCell = document.createElement("td");
-                    notificationCell.colSpan = 5;
-                    notificationCell.classList.add("notification-cell");
-                    const notificationText = document.createElement("div");
-                    notificationText.classList.add("scroll-container");
-                    const scrollNotification = document.createElement("div");
-                    scrollNotification.classList.add("scroll-text");
-                    scrollNotification.innerHTML = departure.notifications[0].text;
+                    const notificationText = departure.notifications[0].text;
 
-                    this.setScrollAnimation(scrollNotification, this.config.scrollSpeed);
+                    if (this.config.displayBundled) {
+                        if (!bundledNotifications[departure.line.number]) {
+                            bundledNotifications[departure.line.number] = new Set();
+                        }
+                        bundledNotifications[departure.line.number].add(notificationText);
+                    } else {
+                        const notificationRow = document.createElement("tr");
+                        const notificationCell = document.createElement("td");
+                        notificationCell.colSpan = 5;
+                        notificationCell.classList.add("notification-cell");
+                        const notificationContainer = document.createElement("div");
+                        notificationContainer.classList.add("scroll-container");
+                        const scrollNotification = document.createElement("div");
+                        scrollNotification.classList.add("scroll-text");
+                        scrollNotification.innerHTML = notificationText;
 
-                    notificationText.appendChild(scrollNotification);
-                    notificationCell.appendChild(notificationText);
-                    notificationRow.appendChild(notificationCell);
-                    table.appendChild(notificationRow);
+                        this.setScrollAnimation(scrollNotification, this.config.scrollSpeed);
 
-                    row.classList.remove("departure-row");
+                        notificationContainer.appendChild(scrollNotification);
+                        notificationCell.appendChild(notificationContainer);
+                        notificationRow.appendChild(notificationCell);
+                        table.appendChild(notificationRow);
+                    }
                 }
+            }
+
+            // Falls displayBundled aktiviert ist, füge die gebündelten Benachrichtigungen hinzu
+            if (this.config.displayBundled) {
+                Object.keys(bundledNotifications).forEach(lineNumber => {
+                    bundledNotifications[lineNumber].forEach(notificationText => {
+                        const notificationRow = document.createElement("tr");
+                        const notificationCell = document.createElement("td");
+                        notificationCell.colSpan = 5;
+                        notificationCell.classList.add("notification-cell");
+                        const notificationContainer = document.createElement("div");
+                        notificationContainer.classList.add("scroll-container");
+                        const scrollNotification = document.createElement("div");
+                        scrollNotification.classList.add("scroll-text");
+                        scrollNotification.innerHTML = notificationText;
+
+                        this.setScrollAnimation(scrollNotification, this.config.scrollSpeed);
+
+                        notificationContainer.appendChild(scrollNotification);
+                        notificationCell.appendChild(notificationContainer);
+                        notificationRow.appendChild(notificationCell);
+                        table.appendChild(notificationRow);
+                    });
+                });
             }
 
             wrapper.appendChild(table);
@@ -142,9 +176,9 @@ Module.register("MMM-MVVWiesty", {
                 const data = await response.json();
                 if (data && data.departures && data.departures.length > 0) {
                     self.departures = self.filterDepartures(data.departures);
-                    self.departures.sort(function (a, b) {
-                        return new Date(`1970-01-01T${a.departureLive}:00Z`) - new Date(`1970-01-01T${b.departureLive}:00Z`);
-                    });
+                    self.departures.sort((a, b) =>
+                        new Date(`1970-01-01T${a.departureLive}:00Z`) - new Date(`1970-01-01T${b.departureLive}:00Z`)
+                    );
                     self.updateFilteredDepartures();
                     self.updateDom();
                 }
@@ -161,7 +195,7 @@ Module.register("MMM-MVVWiesty", {
         const filterKeys = Object.keys(self.config.filter);
         const minTime = this.config.minTimeUntilDeparture;
 
-        return departures.filter(function (departure) {
+        return departures.filter(departure => {
             const minutesUntilDeparture = self.calculateTimeUntil(departure.departureLive);
             if (minutesUntilDeparture < minTime) return false;
 
@@ -180,7 +214,7 @@ Module.register("MMM-MVVWiesty", {
 
     updateFilteredDepartures () {
         const now = new Date();
-        this.filteredDepartures = this.departures.filter((departure) => {
+        this.filteredDepartures = this.departures.filter(departure => {
             const departureDate = new Date();
             departureDate.setHours(departure.departureLive.split(":")[0]);
             departureDate.setMinutes(departure.departureLive.split(":")[1]);
@@ -189,24 +223,21 @@ Module.register("MMM-MVVWiesty", {
     },
 
     scheduleUpdate () {
-        const self = this;
-        setInterval(function () {
-            self.loadDepartures();
+        setInterval(() => {
+            this.loadDepartures();
         }, 300000);
     },
 
     scheduleMinuteUpdate () {
-        const self = this;
         const now = new Date();
         const msUntilNextMinute = (60 - now.getSeconds()) * 1000;
 
-        setTimeout(function () {
-            self.updateFilteredDepartures();
-            self.updateDom();
-
-            setInterval(function () {
-                self.updateFilteredDepartures();
-                self.updateDom();
+        setTimeout(() => {
+            this.updateFilteredDepartures();
+            this.updateDom();
+            setInterval(() => {
+                this.updateFilteredDepartures();
+                this.updateDom();
             }, 60000);
         }, msUntilNextMinute);
     }

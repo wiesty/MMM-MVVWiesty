@@ -32,6 +32,7 @@ MagicMirror² module to display public transport from Munich in Germany.
             stopId: "de:09162:6",           // Stop ID for your station
             filter: {},                     // Filter by line and/or direction (optional)
             displayNotifications: true,     // Show notifications for each departure if available
+            displayBundled: true,           // prevent notifications beeing displayed multiple times
             scrollSpeed: 40,                // Speed for scrolling notifications
             minTimeUntilDeparture: 0        // Minimum time in minutes until departure to display
         }
