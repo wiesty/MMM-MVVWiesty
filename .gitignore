@@ -1,0 +1,20 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# macOS Trash folder which might appear on external disk
+.Trashes
+
+# macOS resource forks
+._*
+
+# macOS Finder tags
+.Tag
+
+# JavaScript
+node_modules/
+npm-debug.log
+yarn-error.log
+dist/
+build/
