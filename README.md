@@ -131,7 +131,12 @@ This flexible filtering system ensures that you can always access the departures
 
 ## Changelog
 
-### v2.0.1 - Latest Release
+
+### v2.0.2 - Latest release
+
+* **Bundled notifications**: Added an option to prevent double notifications.
+
+### v2.0.1
 
 * **Expanded Filtering**: The `filter` option now supports multiple directions per line using an array format, allowing more precise control over which departures are displayed. For example, `"S2": ["Petershausen", "Isator", "Ostbahnhof"]` will show all S2 departures toward these specified destinations.
 * **New Icon**: Added an icon for ExpressBus to enhance line identification.
