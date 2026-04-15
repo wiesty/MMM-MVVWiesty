@@ -23,7 +23,6 @@ Module.register("MMM-MVVWiesty", {
     },
 
     getHeader () {
-        // if global header is set, use it, otherwise use default header
         return this.data.header || this.config.header || "MVV Abfahrtsmonitor";
     },
 
@@ -32,17 +31,15 @@ Module.register("MMM-MVVWiesty", {
         wrapper.classList.add("mvv-table-wrapper");
 
         if (this.filteredDepartures.length > 0) {
-            const table = document.createElement("table");
-            table.classList.add("mvv-table");
-
             let bundledNotifications = {};
 
             for (let i = 0; i < this.filteredDepartures.length && i < this.config.maxEntries; i++) {
                 const departure = this.filteredDepartures[i];
-                const row = document.createElement("tr");
+
+                const row = document.createElement("div");
                 row.classList.add("departure-row");
 
-                const iconCell = document.createElement("td");
+                const iconCell = document.createElement("div");
                 iconCell.classList.add("icon-cell");
                 const lineImage = document.createElement("img");
                 lineImage.classList.add("productsvg");
@@ -50,28 +47,30 @@ Module.register("MMM-MVVWiesty", {
                 iconCell.appendChild(lineImage);
                 row.appendChild(iconCell);
 
-                const lineCell = document.createElement("td");
+                const lineCell = document.createElement("div");
                 lineCell.classList.add("line-cell");
-                lineCell.innerHTML = departure.line.number;
+                lineCell.textContent = departure.line.number;
                 row.appendChild(lineCell);
 
-                const directionCell = document.createElement("td");
+                const directionCell = document.createElement("div");
                 directionCell.classList.add("direction-cell");
-                directionCell.innerHTML = departure.direction;
+                directionCell.textContent = departure.direction;
                 row.appendChild(directionCell);
 
-                const timeCell = document.createElement("td");
+                const displayTime = departure.departureLive || departure.departurePlanned;
+
+                const timeCell = document.createElement("div");
                 timeCell.classList.add("time-cell");
-                timeCell.innerHTML = departure.departureLive;
+                timeCell.textContent = displayTime;
                 row.appendChild(timeCell);
 
-                const untilCell = document.createElement("td");
+                const untilCell = document.createElement("div");
                 untilCell.classList.add("until-cell");
-                const minutesUntilDeparture = this.calculateTimeUntil(departure.departureLive);
-                untilCell.innerHTML = minutesUntilDeparture >= 1 ? `in ${minutesUntilDeparture} Min` : "";
+                const minutesUntilDeparture = this.calculateTimeUntil(departure);
+                untilCell.textContent = minutesUntilDeparture >= 1 ? `in ${minutesUntilDeparture} Min` : "";
                 row.appendChild(untilCell);
 
-                table.appendChild(row);
+                wrapper.appendChild(row);
 
                 if (this.config.displayNotifications && departure.notifications && departure.notifications.length > 0) {
                     const notificationText = departure.notifications[0].text;
@@ -82,56 +81,39 @@ Module.register("MMM-MVVWiesty", {
                         }
                         bundledNotifications[departure.line.number].add(notificationText);
                     } else {
-                        const notificationRow = document.createElement("tr");
-                        const notificationCell = document.createElement("td");
-                        notificationCell.colSpan = 5;
-                        notificationCell.classList.add("notification-cell");
-                        const notificationContainer = document.createElement("div");
-                        notificationContainer.classList.add("scroll-container");
-                        const scrollNotification = document.createElement("div");
-                        scrollNotification.classList.add("scroll-text");
-                        scrollNotification.innerHTML = notificationText;
-
-                        this.setScrollAnimation(scrollNotification, this.config.scrollSpeed);
-
-                        notificationContainer.appendChild(scrollNotification);
-                        notificationCell.appendChild(notificationContainer);
-                        notificationRow.appendChild(notificationCell);
-                        table.appendChild(notificationRow);
+                        wrapper.appendChild(this.createNotificationRow(notificationText));
                     }
                 }
             }
 
-            // Falls displayBundled aktiviert ist, füge die gebündelten Benachrichtigungen hinzu
             if (this.config.displayBundled) {
                 Object.keys(bundledNotifications).forEach(lineNumber => {
                     bundledNotifications[lineNumber].forEach(notificationText => {
-                        const notificationRow = document.createElement("tr");
-                        const notificationCell = document.createElement("td");
-                        notificationCell.colSpan = 5;
-                        notificationCell.classList.add("notification-cell");
-                        const notificationContainer = document.createElement("div");
-                        notificationContainer.classList.add("scroll-container");
-                        const scrollNotification = document.createElement("div");
-                        scrollNotification.classList.add("scroll-text");
-                        scrollNotification.innerHTML = notificationText;
-
-                        this.setScrollAnimation(scrollNotification, this.config.scrollSpeed);
-
-                        notificationContainer.appendChild(scrollNotification);
-                        notificationCell.appendChild(notificationContainer);
-                        notificationRow.appendChild(notificationCell);
-                        table.appendChild(notificationRow);
+                        wrapper.appendChild(this.createNotificationRow(notificationText));
                     });
                 });
             }
-
-            wrapper.appendChild(table);
         } else {
-            wrapper.innerHTML = "Keine Abfahrten gefunden.";
+            wrapper.textContent = "Keine Abfahrten gefunden.";
         }
 
         return wrapper;
+    },
+
+    createNotificationRow (notificationText) {
+        const notificationRow = document.createElement("div");
+        notificationRow.classList.add("notification-row");
+        const notificationContainer = document.createElement("div");
+        notificationContainer.classList.add("scroll-container");
+        const scrollNotification = document.createElement("div");
+        scrollNotification.classList.add("scroll-text");
+        scrollNotification.textContent = notificationText;
+
+        this.setScrollAnimation(scrollNotification, this.config.scrollSpeed);
+
+        notificationContainer.appendChild(scrollNotification);
+        notificationRow.appendChild(notificationContainer);
+        return notificationRow;
     },
 
     setScrollAnimation (scrollTextElement, scrollSpeed) {
@@ -158,12 +140,18 @@ Module.register("MMM-MVVWiesty", {
         }
     },
 
-    calculateTimeUntil (departureTime) {
-        const now = new Date();
-        const departure = new Date();
-        departure.setHours(departureTime.split(":")[0]);
-        departure.setMinutes(departureTime.split(":")[1]);
-        const diff = Math.floor((departure - now) / (1000 * 60));
+    calculateTimeUntil (departure) {
+        const timeStr = departure.departureLive || departure.departurePlanned;
+        if (!timeStr) return 0;
+
+        const dateStr = departure.departureDate; // e.g. "20260415"
+        const year = parseInt(dateStr.substring(0, 4));
+        const month = parseInt(dateStr.substring(4, 6)) - 1;
+        const day = parseInt(dateStr.substring(6, 8));
+        const [hours, minutes] = timeStr.split(":").map(Number);
+
+        const departureDateTime = new Date(year, month, day, hours, minutes, 0);
+        const diff = Math.floor((departureDateTime - new Date()) / (1000 * 60));
         return diff >= 0 ? diff : 0;
     },
 
@@ -179,9 +167,11 @@ Module.register("MMM-MVVWiesty", {
                 if (data && data.departures && data.departures.length > 0) {
                     Log.info(`[MMM-MVVWiesty]: Fetched ${data.departures.length} departures from API.`);
                     self.departures = self.filterDepartures(data.departures);
-                    self.departures.sort((a, b) =>
-                        new Date(`1970-01-01T${a.departureLive}:00Z`) - new Date(`1970-01-01T${b.departureLive}:00Z`)
-                    );
+                    self.departures.sort((a, b) => {
+                        const dateTimeA = `${a.departureDate}T${a.departureLive || a.departurePlanned}`;
+                        const dateTimeB = `${b.departureDate}T${b.departureLive || b.departurePlanned}`;
+                        return dateTimeA.localeCompare(dateTimeB);
+                    });
                     self.updateFilteredDepartures();
                     self.updateDom();
                     Log.info(`[MMM-MVVWiesty]: Filtered, we have ${self.departures.length} departures to present`);
@@ -202,24 +192,15 @@ Module.register("MMM-MVVWiesty", {
         const minTime = this.config.minTimeUntilDeparture;
 
         return departures.filter(departure => {
-            const minutesUntilDeparture = self.calculateTimeUntil(departure.departureLive);
+            const minutesUntilDeparture = self.calculateTimeUntil(departure);
             if (minutesUntilDeparture < minTime) return false;
 
             if (filterKeys.length === 0 || self.config.filter.hasOwnProperty("all")) return true;
 
-            // At this stage we do have filters, so let's check them:
-            // 1) check line number
-            // 2) check direction of given line number
             const lineFilter = self.config.filter[departure.line.number];
 
-            if (lineFilter === undefined) {
-                // Filter for line number is not defined, so we skip this departure
-                return false;
-            }
-            if (!lineFilter) {
-                // Filter for line number found, but is empty, no directions defined, so we include all departures of this line
-                return true;
-            }
+            if (lineFilter === undefined) return false;
+            if (!lineFilter) return true;
 
             if (Array.isArray(lineFilter)) {
                 return lineFilter.includes(departure.direction);
@@ -232,10 +213,17 @@ Module.register("MMM-MVVWiesty", {
     updateFilteredDepartures () {
         const now = new Date();
         this.filteredDepartures = this.departures.filter(departure => {
-            const departureDate = new Date();
-            departureDate.setHours(departure.departureLive.split(":")[0]);
-            departureDate.setMinutes(departure.departureLive.split(":")[1]);
-            return departureDate >= now;
+            const timeStr = departure.departureLive || departure.departurePlanned;
+            if (!timeStr) return false;
+
+            const dateStr = departure.departureDate;
+            const year = parseInt(dateStr.substring(0, 4));
+            const month = parseInt(dateStr.substring(4, 6)) - 1;
+            const day = parseInt(dateStr.substring(6, 8));
+            const [hours, minutes] = timeStr.split(":").map(Number);
+
+            const departureDateTime = new Date(year, month, day, hours, minutes, 0);
+            return departureDateTime >= now;
         });
     },
 

@@ -1,106 +1,84 @@
+/* ── Module container ─────────────────────────────────── */
 .MMM-MVVWiesty .module-content {
   margin: 0;
-  overflow: visible;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
 }
 
 .mvv-table-wrapper {
-  width: auto;
-  max-width: 100%;
-  overflow: visible;
+  width: 100%;
+  min-width: 200px;
 }
 
-.mvv-table {
-  width: auto;
-  table-layout: auto;
-  border-collapse: collapse;
-  font-size: inherit;
-  line-height: 1.4;
+/* ── Each departure row ───────────────────────────────── */
+.departure-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.15em 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.mvv-table td {
-  padding: 0.15em 0.4em;
-  vertical-align: middle;
-  box-sizing: border-box;
+.departure-row:last-of-type {
+  border-bottom: none;
 }
 
+/* ── Icon ─────────────────────────────────────────────── */
 .icon-cell {
-  width: 1%;
-  padding-right: 0.5em;
-  padding-left: 0;
-  text-align: left;
-  white-space: nowrap;
+  flex: 0 0 auto;
 }
 
 .productsvg {
   height: 1em;
   width: auto;
   display: block;
-  vertical-align: middle;
 }
 
+/* ── Line number ──────────────────────────────────────── */
 .line-cell {
-  width: 1%;
-  padding-right: 0.6em;
-  text-align: left;
-  white-space: nowrap;
+  flex: 0 0 auto;
+  min-width: 2em;
   font-weight: bold;
 }
 
+/* ── Direction: grows, truncates with ellipsis ────────── */
+/* min-width: 0 is required — without it flex items won't  */
+/* shrink below content size and ellipsis never triggers.  */
 .direction-cell {
-  padding-right: 1em;
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
   white-space: nowrap;
-  overflow: visible;
   text-overflow: ellipsis;
-  max-width: 250px;
-  min-width: 80px;
 }
 
+/* ── Departure time ───────────────────────────────────── */
 .time-cell {
-  width: 1%;
-  padding-right: 0.5em;
+  flex: 0 0 auto;
   text-align: right;
-  white-space: nowrap;
   font-weight: 500;
+  white-space: nowrap;
 }
 
+/* ── Countdown "in X Min" ─────────────────────────────── */
 .until-cell {
-  width: 1%;
-  padding-left: 0.5em;
-  padding-right: 0;
+  flex: 0 0 auto;
   text-align: right;
   white-space: nowrap;
+  min-width: 6em;
   opacity: 0.8;
   font-size: 0.9em;
 }
 
-.notification-cell {
-  padding: 0.4em 0;
-  max-width: 25vw !important;
-  overflow: visible;
-}
-
-.mvv-table tr.departure-row {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.mvv-table tr.departure-row:nth-child(even) {
-  background-color: rgba(255, 255, 255, 0.01);
-}
-
-.mvv-table tr:last-child {
-  border-bottom: none;
+/* ── Notification scroll ──────────────────────────────── */
+.notification-row {
+  padding: 0.3em 0;
 }
 
 .scroll-container {
-  overflow: visible;
+  overflow: hidden;
   white-space: nowrap;
   width: 100%;
   position: relative;
-  padding: 0.2em 0;
+  padding: 0.15em 0;
   mask-image: linear-gradient(
     to right,
     rgba(0, 0, 0, 0) 0%,
@@ -120,31 +98,48 @@
 }
 
 @keyframes scroll-animation {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-100%);
-  }
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
 }
 
+/* ── Center positions: constrain width ───────────────── */
 .top.center .MMM-MVVWiesty,
 .upper.third .MMM-MVVWiesty,
 .middle.center .MMM-MVVWiesty,
 .lower.third .MMM-MVVWiesty,
 .bottom.center .MMM-MVVWiesty,
 .bottom.bar .MMM-MVVWiesty {
-  width: fit-content !important;
-  max-width: 25vw !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
+  width: 28vw;
+  max-width: 520px;
+  min-width: 280px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.top.center .MMM-MVVWiesty .direction-cell,
-.upper.third .MMM-MVVWiesty .direction-cell,
-.middle.center .MMM-MVVWiesty .direction-cell,
-.lower.third .MMM-MVVWiesty .direction-cell,
-.bottom.center .MMM-MVVWiesty .direction-cell,
-.bottom.bar .MMM-MVVWiesty .direction-cell {
-  max-width: 150px !important;
+/* ── Left positions ───────────────────────────────────── */
+.top.left .MMM-MVVWiesty,
+.upper.left .MMM-MVVWiesty,
+.middle.left .MMM-MVVWiesty,
+.lower.left .MMM-MVVWiesty,
+.bottom.left .MMM-MVVWiesty {
+  width: 100%;
+  max-width: 380px;
+}
+
+/* ── Right positions: override MM's default text-align ── */
+.top.right .MMM-MVVWiesty,
+.upper.right .MMM-MVVWiesty,
+.middle.right .MMM-MVVWiesty,
+.lower.right .MMM-MVVWiesty,
+.bottom.right .MMM-MVVWiesty {
+  width: 100%;
+  max-width: 380px;
+}
+
+.top.right .MMM-MVVWiesty .departure-row,
+.upper.right .MMM-MVVWiesty .departure-row,
+.middle.right .MMM-MVVWiesty .departure-row,
+.lower.right .MMM-MVVWiesty .departure-row,
+.bottom.right .MMM-MVVWiesty .departure-row {
+  text-align: left;
 }
