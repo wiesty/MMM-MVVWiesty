@@ -131,8 +131,11 @@ This flexible filtering system ensures that you can always access the departures
 
 ## Changelog
 
+### v2.0.3 - Latest release
 
-### v2.0.2 - Latest release
+* **Lines Filter**: Added "all" get parameter to get results when no filter is selected. - MVV updated their api - before their latest update it was possible to leave the lines filter parameter blank. 
+
+### v2.0.2
 
 * **Bundled notifications**: Added an option to prevent double notifications.
 
