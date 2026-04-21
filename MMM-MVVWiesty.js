@@ -158,7 +158,7 @@ Module.register("MMM-MVVWiesty", {
     async loadDepartures () {
         const self = this;
         const stopId = this.config.stopId.replace(/:/g, "%3A");
-        const url = `https://www.mvv-muenchen.de/?eID=departuresFinder&action=get_departures&stop_id=${stopId}&requested_timestamp=${Math.floor(Date.now() / 1000)}&lines=`;
+        const url = `https://www.mvv-muenchen.de/?eID=departuresFinder&action=get_departures&stop_id=${stopId}&requested_timestamp=${Math.floor(Date.now() / 1000)}&lines=all`;
         Log.info(`[MMM-MVVWiesty]: Fetching departures from URL: ${url}`);
         try {
             const response = await fetch(url);
