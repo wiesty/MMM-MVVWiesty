@@ -131,7 +131,12 @@ This flexible filtering system ensures that you can always access the departures
 
 ## Changelog
 
-### v2.0.3 - Latest release
+### v2.0.4 - Latest release
+
+* **Notification ticker**: Starts at the right edge of its own row and scrolls fully across at the configured speed.
+* **Empty notifications**: Ignores blank MVV notices instead of adding invisible rows.
+
+### v2.0.3
 
 * **Lines Filter**: Added "all" get parameter to get results when no filter is selected. - MVV updated their api - before their latest update it was possible to leave the lines filter parameter blank. 
 

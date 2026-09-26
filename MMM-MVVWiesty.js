@@ -73,7 +73,10 @@ Module.register("MMM-MVVWiesty", {
                 wrapper.appendChild(row);
 
                 if (this.config.displayNotifications && departure.notifications && departure.notifications.length > 0) {
-                    const notificationText = departure.notifications[0].text;
+                    const notificationText = departure.notifications
+                        .map(notification => typeof notification.text === "string" ? notification.text.trim() : "")
+                        .find(Boolean);
+                    if (!notificationText) continue;
 
                     if (this.config.displayBundled) {
                         if (!bundledNotifications[departure.line.number]) {
@@ -109,20 +112,30 @@ Module.register("MMM-MVVWiesty", {
         scrollNotification.classList.add("scroll-text");
         scrollNotification.textContent = notificationText;
 
-        this.setScrollAnimation(scrollNotification, this.config.scrollSpeed);
-
         notificationContainer.appendChild(scrollNotification);
         notificationRow.appendChild(notificationContainer);
+        this.setScrollAnimation(scrollNotification, this.config.scrollSpeed);
         return notificationRow;
     },
 
     setScrollAnimation (scrollTextElement, scrollSpeed) {
-        document.body.appendChild(scrollTextElement);
-        const scrollWidth = scrollTextElement.scrollWidth;
-        document.body.removeChild(scrollTextElement);
-        scrollTextElement.style.width = `${scrollWidth}px`;
-        const duration = scrollWidth / scrollSpeed;
-        scrollTextElement.style.animationDuration = `${duration}s`;
+        const container = scrollTextElement.parentElement;
+        const observer = new ResizeObserver(() => {
+            if (!container.isConnected || !container.clientWidth) return;
+
+            const containerWidth = container.clientWidth;
+            const textWidth = scrollTextElement.scrollWidth;
+            if (!textWidth) return;
+
+            const speed = Number(scrollSpeed) > 0 ? Number(scrollSpeed) : 40;
+            scrollTextElement.style.setProperty("--scroll-start", `${containerWidth}px`);
+            scrollTextElement.style.setProperty("--scroll-end", `${-textWidth}px`);
+            scrollTextElement.style.animationDuration = `${(containerWidth + textWidth) / speed}s`;
+            scrollTextElement.style.animationPlayState = "running";
+            scrollTextElement.style.visibility = "visible";
+            observer.disconnect();
+        });
+        observer.observe(container);
     },
 
     getLineIcon (lineName) {
